@@ -22,36 +22,59 @@ std::vector<String> Display::strings = {
 };
 
 Display::Display() :
+    
     // Initialize the OLED display using brzo_i2c
     // D3 -> SDA
     // D5 -> SCL
-    display(new SSD1306Brzo(0x3c, D3, D5))
+    display(new SSD1306Brzo(0x3c, SDA, SCL))
 {
-    debug("Starting Display.");
+    debug("Starting Display.");  
+
     // Initialising the UI will init the display too.
-    display->init();
+    //display->init();
 
-    display->flipScreenVertically();
-    display->setFont(ArialMT_Plain_10);
-}
+    //display->flipScreenVertically();
+    //display->setFont(ArialMT_Plain_10);
 
-void Display::setData(dataStruct* d)
-{
-    data = d;
-}
-
-void Display::sine(unsigned x, unsigned y)
-{
-    static long sinX = 0;
-    for (int i=0; i<128-x; i++)
-    {
-        float t = ((float)i* 2.0 * PI + sinX++)/(128-x);
-        display->setPixel(x+i, y + int(y*sin(t)));
-    }
-    display->drawHorizontalLine(x, y, 128-x);
+    setUI();
 }
 
 void Display::update()
+{
+    ui->update();
+}
+
+void Display::setUI()
+{
+
+    FrameCallback frames[] = {
+        [=](OLEDDisplay *display, OLEDDisplayUiState* state, int16_t x, int16_t y) {
+          //logo
+        },
+        [=](OLEDDisplay *display, OLEDDisplayUiState* state, int16_t x, int16_t y) {
+          //data
+        }
+    };
+
+    int frameCount = 2;
+
+    // Initialize the UI
+    OLEDDisplayUi ui(display);
+    ui.setTargetFPS(60);
+    ui.disableAllIndicators();
+    ui.setFrameAnimation(SLIDE_LEFT);
+    ui.setTimePerFrame(5);
+
+    ui.setFrames(frames, frameCount);
+
+    // Initialising the UI will init the display too.
+    ui.init();
+
+    display->flipScreenVertically();
+
+}
+
+void Display::displayData(OLEDDisplay *display, OLEDDisplayUiState* state, int16_t x, int16_t y)
 {
     display->clear();
 
@@ -91,7 +114,28 @@ void Display::update()
         display->drawString(127, 10*pos++, string);
 
     // write the buffer to the display
-    display->display();
+    display->display();    
+}
+
+void Display::displayLogo(OLEDDisplay *display, OLEDDisplayUiState* state, int16_t x, int16_t y)
+{
+    display->drawXbm(x + 34, y + 14, WiFi_Logo_width, WiFi_Logo_height, WiFi_Logo_bits);
+}
+
+void Display::setData(dataStruct* d)
+{
+    data = d;
+}
+
+void Display::sine(unsigned x, unsigned y)
+{
+    static long sinX = 0;
+    for (int i=0; i<128-x; i++)
+    {
+        float t = ((float)i* 2.0 * PI + sinX++)/(128-x);
+        display->setPixel(x+i, y + int(y*sin(t)));
+    }
+    display->drawHorizontalLine(x, y, 128-x);
 }
 
 void Display::ota(Ota::States state, float progress, ota_error_t error)
