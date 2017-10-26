@@ -25,7 +25,9 @@ Display::Display() :
     // Initialize the OLED display using brzo_i2c
     // D3 -> SDA
     // D5 -> SCL
-    display(new SSD1306Brzo(0x3c, D3, D5))
+    display(new SSD1306Brzo(0x3c, D3, D5)),
+    delayBetweenFrames(5),
+    targetFps(20)
 {
     debug("Starting Display.");
     // Initialising the UI will init the display too.
@@ -35,23 +37,17 @@ Display::Display() :
     display->setFont(ArialMT_Plain_10);
 }
 
-void Display::setData(dataStruct* d)
+void Display::setDisplayFps(const float fps)
 {
-    data = d;
+    targetFps = fps;
 }
 
-void Display::sine(unsigned x, unsigned y)
+void Display::setDisplayDelay(const uint delay)
 {
-    static long sinX = 0;
-    for (int i=0; i<128-x; i++)
-    {
-        float t = ((float)i* 2.0 * PI + sinX++)/(128-x);
-        display->setPixel(x+i, y + int(y*sin(t)));
-    }
-    display->drawHorizontalLine(x, y, 128-x);
+    delayBetweenFrames = delay;
 }
 
-void Display::update()
+void Display::displayData()
 {
     display->clear();
 
@@ -91,7 +87,56 @@ void Display::update()
         display->drawString(127, 10*pos++, string);
 
     // write the buffer to the display
+    display->display();    
+}
+
+void Display::displayDataMin()
+{
+    display->clear();
+
+    display->setFont(ArialMT_Plain_10);
+    String wunit = " Wh";
+    if (((int)data->averageConsumption)%1000)
+        wunit = " kWh";
+    String wh = String(data->averageConsumption/1000) + wunit;
+    fps = 0.97*fps + 0.03*1e3/(millis() - lastMillis);
+    lastMillis = millis();
+
+    display->setTextAlignment(TEXT_ALIGN_CENTER_BOTH);
+
+    display->setFont(ArialMT_Plain_16);
+    display->drawString(64, 10, data->nodeName);
+    display->setFont(ArialMT_Plain_10);
+    display->drawString(64, 24, data->relayStatus ? "ON" : "OFF");
+    display->setFont(ArialMT_Plain_24);
+    display->drawString(64, 40, wh);
+
+    display->setFont(ArialMT_Plain_10);
+    // write the buffer to the display
+    display->display();    
+}
+
+void Display::displayLogo()
+{
+    display->clear();
+    display->drawXbm(34,0, HaLiO_Logo_width, HaLiO_Logo_height, HaLiO_Logo_bits);
     display->display();
+}
+
+void Display::setData(dataStruct* d)
+{
+    data = d;
+}
+
+void Display::sine(unsigned x, unsigned y)
+{
+    static long sinX = 0;
+    for (int i=0; i<128-x; i++)
+    {
+        float t = ((float)i* 2.0 * PI + sinX++)/(128-x);
+        display->setPixel(x+i, y + int(y*sin(t)));
+    }
+    display->drawHorizontalLine(x, y, 128-x);
 }
 
 void Display::ota(Ota::States state, float progress, ota_error_t error)

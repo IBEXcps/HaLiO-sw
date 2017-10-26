@@ -12,6 +12,8 @@
 
 #include "SSD1306Brzo.h"
 #include "SH1106Brzo.h"
+#include "OLEDDisplayUi.h"
+#include "images.h"
 #include "data.h"
 #include "ota.h"
 
@@ -19,7 +21,11 @@ class Display
 {
 public:
 
-    void update();
+    void displayData();
+    void displayDataMin();
+    void displayLogo();
+    void setDisplayFps(const float fps);
+    void setDisplayDelay(const uint delay);
     void ota(Ota::States state, float progress, ota_error_t error = OTA_BEGIN_ERROR);
 
     void setData(dataStruct* d);
@@ -29,6 +35,10 @@ public:
     ~Display();
 
     SSD1306Brzo* display;
+    OLEDDisplayUi* ui;
+
+    float targetFps;
+    uint delayBetweenFrames;
 
 private:
     void sine(unsigned x = 64, unsigned y = 16);
