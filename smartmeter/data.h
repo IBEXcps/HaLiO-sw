@@ -30,6 +30,7 @@ struct dataStruct
     unsigned int upTime = 0;
     unsigned int relayTime = 0; // Time since last status change
     bool relayStatus = false; // on off
+    bool buttonState = false; //on off
     unsigned int otaProgress = 0; // ota progress
 };
 

@@ -22,6 +22,8 @@
 #define YELLOW_LED D7
 #define GREEN_LED D4
 #define RELAY D2
+#define CURRENT_SENSOR A0
+#define BUTTON D5
 
 void ledTest()
 {
@@ -47,10 +49,15 @@ float readCurrent()
 {
     static float current = 0;
 
-    Data::self().data->actualCurrent = (analogRead(A0)-450.5)/450.5*30.0;
+    Data::self().data->actualCurrent = (analogRead(CURRENT_SENSOR)-450.5)/450.5*30.0;
     current = current*0.95 + 0.05*Data::self().data->actualCurrent;
     Data::self().data->averageCurrent = current;
     return current;
+}
+
+void changeButtonState()
+{
+    Data::self().data->buttonState = !Data::self().data->buttonState;
 }
 
 void runWebClient()
@@ -83,6 +90,7 @@ void setupHW()
     pinMode(YELLOW_LED, OUTPUT);
     pinMode(GREEN_LED, OUTPUT);
     pinMode(RELAY, OUTPUT);
+    pinMode(BUTTON, INPUT);
     //Cathod comun
     digitalWrite(RED_LED, HIGH);
     digitalWrite(YELLOW_LED, HIGH);
@@ -142,6 +150,8 @@ void setup()
 
     displayThread.onRun([](){screenChange();});
     displayThread.setInterval(1000/Display::self().targetFps);
+
+    attachInterrupt(digitalPinToInterrupt(BUTTON), changeButtonState, CHANGE);
 
     connectionThread.onRun([](){Connection::self().run();});
     connectionThread.setInterval(1000);
