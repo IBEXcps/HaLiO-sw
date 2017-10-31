@@ -119,7 +119,7 @@ void Display::displayDataMin()
 void Display::displayLogo()
 {
     display->clear();
-    display->drawXbm(0,0, HaLiO_Logo_width, HaLiO_Logo_height, HaLiO_Logo_bits);
+    display->drawXbm(0,0, HaLiO_Logo_inv_width, HaLiO_Logo_inv_height, HaLiO_Logo_inv_bits);
     display->display();
 }
 
