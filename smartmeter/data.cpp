@@ -45,6 +45,8 @@ void Data::print()
     string.concat(data->relayTime);
     string.concat("\n\rrelayStatus : ");
     string.concat(data->relayStatus);
+    string.concat("\n\rButton state : ");
+    string.concat(data->buttonState);
     debug("%s", string.c_str());
 }
 
