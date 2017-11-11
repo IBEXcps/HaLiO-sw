@@ -1,7 +1,7 @@
 # Makefile for compatibility with both Serial and OTA uploads
 
 SRC_DIR = ${PWD}/smartmeter
-BUILD_DIR = ${SRC_DIR}/build
+BUILD_DIR = ${PWD}/build
 MAIN_FILE = smartmeter.ino
 TOOLS = ${PWD}/tools
 
