@@ -91,7 +91,7 @@ void Display::displayData()
         display->drawString(127, 10*pos++, string);
 
     // write the buffer to the display
-    display->display();    
+    display->display();
 }
 
 void Display::displayDataMin()
@@ -117,7 +117,7 @@ void Display::displayDataMin()
 
     display->setFont(ArialMT_Plain_10);
     // write the buffer to the display
-    display->display();    
+    display->display();
 }
 
 void Display::displayLogo()
