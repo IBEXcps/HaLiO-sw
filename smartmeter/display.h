@@ -24,6 +24,7 @@ public:
     void displayData();
     void displayDataMin();
     void displayLogo();
+    void run();
     void setDisplayFps(const float fps);
     void setDisplayDelay(const uint delay);
     void ota(Ota::States state, float progress, ota_error_t error = OTA_BEGIN_ERROR);
@@ -37,7 +38,7 @@ public:
     SSD1306Brzo* display;
     OLEDDisplayUi* ui;
 
-    float targetFps;
+    uint targetFps;
     uint delayBetweenFrames;
 
 private:
@@ -50,4 +51,5 @@ private:
     float fps;
     long lastMillis = 0;
     static std::vector<String> strings;
+    std::vector<void (*)()> screens;
 };

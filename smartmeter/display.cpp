@@ -35,6 +35,10 @@ Display::Display() :
 
     display->flipScreenVertically();
     display->setFont(ArialMT_Plain_10);
+
+    screens.push_back([=](){Display::self().displayLogo();});
+    screens.push_back([=](){Display::self().displayDataMin();});
+    screens.push_back([=](){Display::self().displayData();});
 }
 
 void Display::setDisplayFps(const float fps)
@@ -121,6 +125,23 @@ void Display::displayLogo()
     display->clear();
     display->drawXbm(0,0, HaLiO_Logo_width, HaLiO_Logo_height, HaLiO_Logo_bits);
     display->display();
+}
+
+void Display::run()
+{
+    static uint counter = 0;
+    static uint screenId = 0;
+    static uint lastScreenId = -1;
+    static const uint numOfScreens = screens.size();
+
+    counter++;
+    screenId = (int)counter / (targetFps * delayBetweenFrames);
+    screenId = screenId % numOfScreens;
+
+    if (screenId != lastScreenId) {
+        screens[screenId]();
+        lastScreenId = screenId;
+    }
 }
 
 void Display::setData(dataStruct* d)
