@@ -98,31 +98,6 @@ void setupHW()
     digitalWrite(RELAY, OUTPUT);
 }
 
-void screenChange()
-{
-    static uint id = 0;
-    static uint slt = 0;
-    static const uint delay = Display::self().delayBetweenFrames;
-    static const uint fps = (uint)Display::self().targetFps;
-    static const uint numOfScreens = 3;
-
-    id++;
-    slt = id%(fps*delay*numOfScreens);
-
-    if(slt<=(fps*delay*1))
-    {
-        Display::self().displayLogo();
-    }
-    else if(slt<=(fps*delay*2))
-    {
-        Display::self().displayData();
-    }
-    else
-    {
-        Display::self().displayDataMin();
-    }
-}
-
 Thread ledThread = Thread();
 Thread displayThread = Thread();
 Thread connectionThread = Thread();
@@ -148,7 +123,7 @@ void setup()
     ledThread.onRun(ledTest);
     ledThread.setInterval(500);
 
-    displayThread.onRun([](){screenChange();});
+    displayThread.onRun([](){Display::self().run();});
     displayThread.setInterval(1000/Display::self().targetFps);
 
     attachInterrupt(digitalPinToInterrupt(BUTTON), changeButtonState, CHANGE);
