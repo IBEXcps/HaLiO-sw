@@ -23,6 +23,7 @@ all:
 	arduino --verify ${ARG} ${SRC_DIR}/${MAIN_FILE}
 
 deps:
+	arduino --install-boards esp8266:esp8266
 	arduino --install-library "ArduinoThread,ArduinoJson,ESP8266 Oled Driver for SSD1306 display,Brzo I2C"
 
 flash:
