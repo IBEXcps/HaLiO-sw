@@ -1,4 +1,4 @@
-# Software Layer of HaLiO
+# Software Layer of HaLiO [![Build Travis](https://api.travis-ci.org/IBEXcps/HaLiO-sw.svg?branch=master)](https://travis-ci.org/IBEXcps/HaLiO-sw)
 
 1. Install Libs: `make deps`
 2. Build: `make`
