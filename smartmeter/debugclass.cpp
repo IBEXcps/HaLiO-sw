@@ -17,7 +17,7 @@ void Debug::print()
 {
     Serial.print(debugBuffer);
     debugMsgs.push_back(debugBuffer);
-    if (debugMsgs.size() > 50) debugMsgs.pop_back();
+    if (debugMsgs.size() > 50) debugMsgs.erase(debugMsgs.begin());
 }
 
 Debug& Debug::self()

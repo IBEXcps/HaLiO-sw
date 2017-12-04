@@ -6,6 +6,9 @@
  * along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 
+#include <algorithm>
+
+#include "debug.h"
 #include "server.h"
 
 WebServer::WebServer() :
@@ -13,7 +16,7 @@ WebServer::WebServer() :
     server(new ESP8266WebServer(80))
 {
     server->on("/", [this](){handleRoot();});
-    server->on("/inline", [this](){handleInline();});
+    server->on("/debug", [this](){handleDebug();});
     server->onNotFound([this](){handleNotFound();});
     server->begin();
 }
@@ -23,9 +26,17 @@ void WebServer::handleRoot()
     server->send(200, "text/plain", "hello from esp8266!");
 }
 
-void WebServer::handleInline()
+void WebServer::handleDebug()
 {
-    server->send(200, "text/plain", "this works as well");
+    String debugOutput;
+    std::reverse(Debug::self().debugMsgs.begin(), Debug::self().debugMsgs.end());
+    while (Debug::self().debugMsgs.size()) {
+        debugOutput += Debug::self().debugMsgs.back();
+        debugOutput.replace("\n", "");
+        Debug::self().debugMsgs.pop_back();
+    }
+
+    server->send(200, "text/plain", debugOutput.c_str());
 }
 
 void WebServer::handleNotFound()
