@@ -11,8 +11,12 @@
 #define DEBUG
 
 #ifdef DEBUG
-static char _debug_buffer[512];
-#define debug(fmt, args ...)  do {sprintf(_debug_buffer, "[%s:%d]: " fmt "\n\r", __PRETTY_FUNCTION__, __LINE__, ## args); Serial.print(_debug_buffer);} while(0)
+#include "debugclass.h"
+
+#define debug(fmt, args ...)  do { \
+        sprintf(Debug::self().debugBuffer, "[%s:%d]: " fmt "\n\r", __PRETTY_FUNCTION__, __LINE__, ## args); \
+        Debug::self().print(); \
+    } while(0)
 #else
 #define debug(fmt, args ...)
 #endif
