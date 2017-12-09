@@ -22,6 +22,8 @@ Ota::Ota()
     });
     ArduinoOTA.onEnd([ = ]() {
         Display::self().ota(FINISHED, data->otaProgress);
+        delay(2000);
+        ESP.reset();
     });
     ArduinoOTA.onProgress([ = ](unsigned int progress, unsigned int total) {
         data->otaProgress = progress / (total / 100);
@@ -29,6 +31,8 @@ Ota::Ota()
     });
     ArduinoOTA.onError([ = ](ota_error_t error) {
         Display::self().ota(ERROR, data->otaProgress, error);
+        delay(2000);
+        ESP.reset();
     });
     ArduinoOTA.begin();
 }
