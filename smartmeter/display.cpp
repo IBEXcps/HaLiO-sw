@@ -182,7 +182,7 @@ void Display::ota(Ota::States state, float progress, ota_error_t error)
             pos = 5;
             Display::self().display->drawString(64, 10*pos, strings[pos]);
             Display::self().display->display();
-            debug("OTA: Progress: %.1f", progress);
+            debug("OTA: Progress: %d\%", (int)progress);
             Display::self().display->display();
             break;
         case Ota::ERROR:
