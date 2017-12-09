@@ -16,6 +16,7 @@
 #include "client.h"
 #include "connection.h"
 #include "data.h"
+#include "filesystem.h"
 #include "ota.h"
 
 #define RED_LED D6
@@ -119,6 +120,8 @@ void setup()
     WebClient::self().setData(Data::self().data);
     Ota::self();
     Ota::self().setData(Data::self().data);
+    FileSystem::self();
+    FileSystem::self().start();
 
     ledThread.onRun(ledTest);
     ledThread.setInterval(500);
@@ -141,6 +144,7 @@ void setup()
         Data::self().data->upTime = (micros() - startTime)/1e3;
         Data::self().print();
         debug("Free memory : %d", ESP.getFreeHeap());
+        FileSystem::self().debugInfo();
     });
     printDataThread.setInterval(1000);
 
