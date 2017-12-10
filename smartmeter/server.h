@@ -16,7 +16,7 @@ public:
 
     void handleRoot();
 
-    void handleInline();
+    void handleDebug();
 
     void handleNotFound();
 
